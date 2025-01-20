@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUser } from 'react-icons/fa';
+import { api } from '../config/api';
 
 interface PlanFeatures {
   orientacao_telemedicina: boolean;
@@ -30,7 +31,7 @@ export default function Purchase() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/plans');
+        const response = await fetch(`${api.baseURL}${api.endpoints.plans}`);
         if (!response.ok) throw new Error('Failed to fetch plans');
         const data = await response.json();
         setPlans(data);
