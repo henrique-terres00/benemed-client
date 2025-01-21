@@ -4,36 +4,48 @@ import { useState } from 'react';
 import { FaHandshake, FaMobileAlt, FaCheckCircle, FaChartLine } from 'react-icons/fa';
 import HeroPartners from '../components/HeroPartners';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import InputMask from 'react-input-mask';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { api } from '../config/api';
 
-interface PartnerForm {
-  name: string;
-  businessName: string;
-  cnpj: string;
-  email: string;
-  phone: string;
-  specialty: string;
-  address: string;
-  city: string;
-  state: string;
-}
+// Funções de validação
+const isValidPhone = (phone: string) => {
+  const cleaned = phone.replace(/\D/g, '');
+  return cleaned.length === 11;
+};
+
+const isValidCNPJ = (cnpj: string) => {
+  const cleaned = cnpj.replace(/\D/g, '');
+  return cleaned.length === 14;
+};
+
+const partnerSchema = z.object({
+  name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
+  businessName: z.string().min(3, 'Nome do estabelecimento deve ter no mínimo 3 caracteres'),
+  email: z.string().email('Email inválido'),
+  phone: z.string().refine(isValidPhone, 'Telefone deve ter 11 dígitos'),
+  city: z.string().min(2, 'Cidade deve ter no mínimo 2 caracteres'),
+  state: z.string().length(2, 'Selecione um estado'),
+  cnpj: z.string().refine(isValidCNPJ, 'CNPJ inválido')
+});
+
+type PartnerFormType = z.infer<typeof partnerSchema>;
 
 const Partners = () => {
   useScrollToTop();
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<PartnerForm>();
+  const [isSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const specialties = [
-    'Clínica Geral',
-    'Cardiologia',
-    'Dermatologia',
-    'Ginecologia',
-    'Oftalmologia',
-    'Ortopedia',
-    'Pediatria',
-    'Psicologia',
-    'Odontologia',
-    'Outros'
-  ];
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<PartnerFormType>({
+    resolver: zodResolver(partnerSchema)
+  });
 
   const states = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
@@ -76,8 +88,8 @@ const Partners = () => {
 
   const item = {
     hidden: { opacity: 0, y: 30 },
-    show: { 
-      opacity: 1, 
+    show: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.5
@@ -85,14 +97,36 @@ const Partners = () => {
     }
   };
 
-  const onSubmit = async (data: PartnerForm) => {
+  const onSubmit = async (data: PartnerFormType) => {
+    setLoading(true);
+
+    // Remove caracteres especiais do telefone e CNPJ antes de enviar
+    const cleanedData = {
+      ...data,
+      phone: data.phone.replace(/\D/g, ''),
+      cnpj: data.cnpj.replace(/\D/g, '')
+    };
+
     try {
-      console.log(data);
-      setIsSubmitted(true);
+      const response = await fetch(`${api.baseURL}${api.endpoints.partners}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cleanedData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao enviar formulário');
+      }
+
+      setSuccess(true);
       reset();
-      setTimeout(() => setIsSubmitted(false), 5000);
-    } catch (error) {
-      console.error('Error submitting form:', error);
+    } catch (err) {
+      alert('Erro ao enviar formulário. Por favor, tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,7 +138,7 @@ const Partners = () => {
       <section className="relative py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-            <motion.div 
+            <motion.div
               className="mt-12 relative lg:mt-0 lg:col-span-6"
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
@@ -118,7 +152,7 @@ const Partners = () => {
                 />
               </div>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="sm:text-center lg:text-left lg:col-span-6 flex flex-col justify-center"
               initial={{ opacity: 0, x: 60 }}
               animate={{ opacity: 1, x: 0 }}
@@ -136,8 +170,8 @@ const Partners = () => {
                   Amplie seu portfólio e aumente sua receita com o BeneMed.
                 </p>
                 <p className="text-base text-gray-700 leading-relaxed">
-                  Ofereça aos seus clientes um produto inovador e de alta demanda: o plano de benefícios BeneMed. 
-                  Com nossa solução Co-branding, você personaliza a oferta com sua marca e conta com uma plataforma 
+                  Ofereça aos seus clientes um produto inovador e de alta demanda: o plano de benefícios BeneMed.
+                  Com nossa solução Co-branding, você personaliza a oferta com sua marca e conta com uma plataforma
                   digital completa para gestão de vendas e relacionamento com o cliente.
                 </p>
               </div>
@@ -168,7 +202,7 @@ const Partners = () => {
 
       {/* Benefits Section */}
       <section id="advantages" className="py-16 bg-gray-50">
-        <motion.div 
+        <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,7 +217,7 @@ const Partners = () => {
             </p>
           </div>
 
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4"
             variants={container}
             initial="hidden"
@@ -194,14 +228,14 @@ const Partners = () => {
                 key={index}
                 className="relative bg-white rounded-xl shadow-lg p-6 group cursor-pointer"
                 variants={item}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.03,
                   y: -5,
                   transition: { duration: 0.2 }
                 }}
               >
                 <div className="flex flex-col items-center text-center">
-                  <motion.div 
+                  <motion.div
                     className="w-16 h-16 flex items-center justify-center bg-[#38B6FF] bg-opacity-20 rounded-full mb-4"
                     whileHover={{
                       scale: 1.1,
@@ -225,7 +259,7 @@ const Partners = () => {
 
       {/* Registration Form */}
       <section id="partner-form" className="py-16 bg-gray-50">
-        <motion.div 
+        <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -252,196 +286,140 @@ const Partners = () => {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Nome Completo
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  {...register('name', { required: 'Nome é obrigatório' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-                )}
+          {success ? (
+            <div className="text-center py-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </motion.div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Formulário enviado com sucesso!</h3>
+              <p className="text-gray-600">Entraremos em contato em breve.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo *</label>
+                  <input
+                    type="text"
+                    {...register('name')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="Digite seu nome completo"
+                  />
+                  {errors.name && (
+                    <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa/Estabelecimento *</label>
+                  <input
+                    type="text"
+                    {...register('businessName')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.businessName ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="Digite o nome da sua empresa"
+                  />
+                  {errors.businessName && (
+                    <p className="mt-1 text-xs text-red-500">{errors.businessName.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Telefone *</label>
+                  <InputMask
+                    mask="(99) 99999-9999"
+                    {...register('phone')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="(00) 00000-0000"
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <input
+                    type="email"
+                    {...register('email')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.email ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="exemplo@email.com"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ *</label>
+                  <InputMask
+                    mask="99.999.999/9999-99"
+                    {...register('cnpj')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.cnpj ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="00.000.000/0000-00"
+                  />
+                  {errors.cnpj && (
+                    <p className="mt-1 text-xs text-red-500">{errors.cnpj.message}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Cidade *</label>
+                    <input
+                      type="text"
+                      {...register('city')}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.city ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      placeholder="Digite sua cidade"
+                    />
+                    {errors.city && (
+                      <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Estado *</label>
+                    <select
+                      {...register('state')}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.state ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                    >
+                      <option value="">Selecione...</option>
+                      {states.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.state && (
+                      <p className="mt-1 text-xs text-red-500">{errors.state.message}</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="businessName" className="block text-sm font-medium text-gray-700">
-                  Nome da Empresa/Estabelecimento
-                </label>
-                <input
-                  type="text"
-                  id="businessName"
-                  {...register('businessName', { required: 'Nome do estabelecimento é obrigatório' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.businessName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.businessName.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">
-                  CNPJ
-                </label>
-                <input
-                  type="text"
-                  id="cnpj"
-                  {...register('cnpj', {
-                    required: 'CNPJ é obrigatório',
-                    pattern: {
-                      value: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/,
-                      message: 'CNPJ inválido'
-                    }
-                  })}
-                  placeholder="00.000.000/0000-00"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.cnpj && (
-                  <p className="mt-1 text-sm text-red-600">{errors.cnpj.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="specialty" className="block text-sm font-medium text-gray-700">
-                  Especialidade
-                </label>
-                <select
-                  id="specialty"
-                  {...register('specialty', { required: 'Especialidade é obrigatória' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50"
                 >
-                  <option value="">Selecione uma especialidade</option>
-                  {specialties.map((specialty) => (
-                    <option key={specialty} value={specialty}>
-                      {specialty}
-                    </option>
-                  ))}
-                </select>
-                {errors.specialty && (
-                  <p className="mt-1 text-sm text-red-600">{errors.specialty.message}</p>
-                )}
+                  {loading ? 'Enviando...' : 'Enviar'}
+                </button>
               </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  {...register('email', {
-                    required: 'Email é obrigatório',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email inválido'
-                    }
-                  })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Telefone
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  {...register('phone', {
-                    required: 'Telefone é obrigatório',
-                    pattern: {
-                      value: /^\(\d{2}\) \d{5}-\d{4}$/,
-                      message: 'Formato: (99) 99999-9999'
-                    }
-                  })}
-                  placeholder="(99) 99999-9999"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Endereço Completo
-              </label>
-              <input
-                type="text"
-                id="address"
-                {...register('address', { required: 'Endereço é obrigatório' })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-              />
-              {errors.address && (
-                <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                  Cidade
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  {...register('city', { required: 'Cidade é obrigatória' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                />
-                {errors.city && (
-                  <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                  Estado
-                </label>
-                <select
-                  id="state"
-                  {...register('state', { required: 'Estado é obrigatório' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-benemed-blue focus:ring-benemed-blue"
-                >
-                  <option value="">Selecione um estado</option>
-                  {states.map((state) => (
-                    <option key={state} value={state}>
-                      {state}
-                    </option>
-                  ))}
-                </select>
-                {errors.state && (
-                  <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
-                )}
-              </div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-[#38B6FF] hover:shadow-xl transition-all duration-200 shadow-lg"
-              style={{
-                transform: 'translateY(0)',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              Enviar Cadastro
-            </motion.button>
-          </form>
+            </form>
+          )}
         </motion.div>
       </section>
     </div>

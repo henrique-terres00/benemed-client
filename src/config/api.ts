@@ -12,6 +12,7 @@ export const api = {
   baseURL: API_URL,
   endpoints: {
     plans: '/api/plans',
+    partners: '/api/partners',
     health: '/health'
   }
 };
