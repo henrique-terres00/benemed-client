@@ -22,7 +22,7 @@ const isValidCNPJ = (cnpj: string) => {
 
 const partnerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
-  businessName: z.string().min(3, 'Nome do estabelecimento deve ter no mínimo 3 caracteres'),
+  companyName: z.string().min(3, 'Nome do estabelecimento deve ter no mínimo 3 caracteres'),
   email: z.string().email('Email inválido'),
   phone: z.string().refine(isValidPhone, 'Telefone deve ter 11 dígitos'),
   city: z.string().min(2, 'Cidade deve ter no mínimo 2 caracteres'),
@@ -321,13 +321,13 @@ const Partners = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa/Estabelecimento *</label>
                   <input
                     type="text"
-                    {...register('businessName')}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.businessName ? 'border-red-500' : 'border-gray-300'
+                    {...register('companyName')}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary ${errors.companyName ? 'border-red-500' : 'border-gray-300'
                       }`}
                     placeholder="Digite o nome da sua empresa"
                   />
-                  {errors.businessName && (
-                    <p className="mt-1 text-xs text-red-500">{errors.businessName.message}</p>
+                  {errors.companyName && (
+                    <p className="mt-1 text-xs text-red-500">{errors.companyName.message}</p>
                   )}
                 </div>
 
