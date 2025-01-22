@@ -1,214 +1,325 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser } from 'react-icons/fa';
-import { api } from '../config/api';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { FaCheck, FaUser, FaUsers } from 'react-icons/fa';
 
 interface PlanFeatures {
-  orientacao_telemedicina: boolean;
-  descontos_medicamentos: boolean;
-  rede_fisica: boolean;
-  assistencia_residencial: boolean;
-  assistencia_pet: boolean;
-  check_up: boolean;
-  acidentes_pessoais: boolean;
-  assistencia_funeral: boolean;
+  assistencias: string[];
+  seguros: string[];
 }
 
-interface Plan {
+interface PlanType {
   id: string;
   name: string;
-  category: 'Bem-estar' | 'Essencial' | 'Protege' | 'Premium';
-  is_family: boolean;
+  type: 'individual' | 'family';
   price: number;
   features: PlanFeatures;
+  description: string;
 }
 
 export default function Purchase() {
   const [selectedType, setSelectedType] = useState<'individual' | 'family'>('individual');
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const response = await fetch(`${api.baseURL}${api.endpoints.plans}`);
-        if (!response.ok) throw new Error('Failed to fetch plans');
-        const data = await response.json();
-        setPlans(data);
-      } catch (error) {
-        console.error('Error loading plans:', error);
-      } finally {
-        setLoading(false);
+  const plans: PlanType[] = [
+    // Planos Bem-estar
+    {
+      id: '1',
+      name: 'Bem-estar Individual',
+      description: 'Proteção essencial para você',
+      type: 'individual',
+      price: 49.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
       }
+    },
+    {
+      id: '2',
+      name: 'Bem-estar Familiar',
+      description: 'Proteção essencial para sua família',
+      type: 'family',
+      price: 89.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    // Planos Essencial
+    {
+      id: '3',
+      name: 'Essencial Individual',
+      description: 'Proteção completa para você',
+      type: 'individual',
+      price: 79.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    {
+      id: '4',
+      name: 'Essencial Familiar',
+      description: 'Proteção completa para sua família',
+      type: 'family',
+      price: 129.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    // Planos Protege
+    {
+      id: '5',
+      name: 'Protege Individual',
+      description: 'Proteção avançada para você',
+      type: 'individual',
+      price: 99.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Assistência Pet',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    {
+      id: '6',
+      name: 'Protege Familiar',
+      description: 'Proteção avançada para sua família',
+      type: 'family',
+      price: 159.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Assistência Pet',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    // Planos Premium
+    {
+      id: '7',
+      name: 'Premium Individual',
+      description: 'Proteção máxima para você',
+      type: 'individual',
+      price: 129.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Assistência Pet',
+          'Check-up completo',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    },
+    {
+      id: '8',
+      name: 'Premium Familiar',
+      description: 'Proteção máxima para sua família',
+      type: 'family',
+      price: 199.90,
+      features: {
+        assistencias: [
+          'Orientação saúde + Telemedicina',
+          'Descontos em medicamentos',
+          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+          'Assistência Residencial',
+          'Assistência Pet',
+          'Check-up completo',
+          'Acidentes pessoais R$10 mil',
+          'Assistência funeral R$5 mil'
+        ],
+        seguros: []
+      }
+    }
+  ];
+
+  const getFeaturesList = (features: PlanFeatures) => {
+    return {
+      assistencias: features.assistencias,
+      seguros: features.seguros
     };
+  };
 
-    fetchPlans();
-  }, []);
+  const allFeatures = {
+    assistencias: [
+      'Orientação saúde + Telemedicina',
+      'Descontos em medicamentos',
+      'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
+      'Assistência Residencial',
+      'Assistência Pet',
+      'Check-up completo'
+    ],
+    coberturas: [
+      'Acidentes pessoais R$10 mil',
+      'Assistência funeral R$5 mil'
+    ]
+  };
 
-  const filteredPlans = plans
-    .filter(plan => selectedType === 'individual' ? !plan.is_family : plan.is_family)
-    .sort((a, b) => {
-      const order = ['Bem-estar', 'Essencial', 'Protege', 'Premium'];
-      return order.indexOf(a.category) - order.indexOf(b.category);
-    });
+  const hasFeature = (planFeatures: string[], feature: string) => {
+    return planFeatures.includes(feature);
+  };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <LoadingSpinner text="Carregando planos de saúde" />
-        </div>
-      </div>
-    );
-  }
+  const filteredPlans = plans.filter(plan => 
+    selectedType === 'individual' ? plan.type === 'individual' : plan.type === 'family'
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-16 px-4">
-      <motion.div 
-        className="max-w-7xl mx-auto"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-[#8566FB] mb-4">
-            Escolha seu plano
+            Nossos Planos
           </h1>
           <p className="text-xl text-gray-900">
-            Selecione o plano ideal para você e sua família
+            Selecione o plano ideal para você ou sua família
           </p>
-        </div>
 
-        {/* Seletor de Tipo */}
-        <div className="flex justify-center mb-16">
-          <div className="bg-white rounded-lg p-2 inline-flex shadow-sm">
+          {/* Seletor de tipo de plano */}
+          <div className="flex justify-center space-x-4 mt-8">
             <button
               onClick={() => setSelectedType('individual')}
-              className={`px-8 py-3 rounded-md flex items-center space-x-2 ${
+              className={`flex items-center px-6 py-2 rounded-full ${
                 selectedType === 'individual'
-                  ? 'bg-[#8566FB] text-white'
-                  : 'text-gray-600 hover:bg-purple-50'
-              }`}
+                  ? 'bg-[#38B6FF] text-white'
+                  : 'bg-white text-gray-600 border border-gray-300'
+              } transition-all duration-200`}
             >
               <FaUser className="mr-2" />
-              <span>Planos Individuais</span>
+              Individual
             </button>
             <button
               onClick={() => setSelectedType('family')}
-              className={`px-8 py-3 rounded-md flex items-center space-x-2 ${
+              className={`flex items-center px-6 py-2 rounded-full ${
                 selectedType === 'family'
-                  ? 'bg-[#8566FB] text-white'
-                  : 'text-gray-600 hover:bg-purple-50'
-              }`}
+                  ? 'bg-[#38B6FF] text-white'
+                  : 'bg-white text-gray-600 border border-gray-300'
+              } transition-all duration-200`}
             >
-              <FaUser className="mr-2" />
-              <span>Planos Familiares</span>
+              <FaUsers className="mr-2" />
+              Familiar
             </button>
           </div>
         </div>
 
-        {/* Cards dos Planos */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16 max-w-7xl mx-auto">
-            {filteredPlans.map((plan) => (
-              <motion.div
-                key={plan.id}
-                className="bg-white rounded-xl shadow-lg p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-              >
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 flex items-center justify-center bg-[#38B6FF] bg-opacity-20 rounded-full mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {filteredPlans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              className="bg-white rounded-xl shadow-lg p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 h-full flex flex-col"
+            >
+              <div className="flex flex-col items-center flex-1">
+                <div className="w-16 h-16 flex items-center justify-center bg-[#38B6FF] bg-opacity-20 rounded-full mb-6">
+                  {selectedType === 'individual' ? (
                     <FaUser className="w-8 h-8 text-[#38B6FF]" />
-                  </div>
-
-                  <span className="px-4 py-1 bg-[#8566FB] text-white rounded-full text-sm mb-4">
-                    {plan.category}
-                  </span>
-
-                  <h3 className="text-2xl font-bold text-[#8566FB] mb-2">{plan.name}</h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-6">
-                    R$ {plan.price.toFixed(2)}
-                    <span className="text-base font-normal text-gray-500">/mês</span>
-                  </p>
-
-                  {/* Assistência Saúde */}
-                  <div className="w-full mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-3">Assistência Saúde</h4>
-                    <ul className="space-y-3">
-                      <li className={`flex items-center ${plan.features.orientacao_telemedicina ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Orientação saúde + Telemedicina
-                      </li>
-                      <li className={`flex items-center ${plan.features.descontos_medicamentos ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Descontos em medicamentos
-                      </li>
-                      <li className={`flex items-center ${plan.features.rede_fisica ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Rede Física
-                      </li>
-                      <li className={`flex items-center ${plan.features.assistencia_residencial ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Assistência Residencial
-                      </li>
-                      <li className={`flex items-center ${plan.features.assistencia_pet ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Assistência Pet
-                      </li>
-                      <li className={`flex items-center ${plan.features.check_up ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Check-up completo
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Seguros */}
-                  <div className="w-full">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-3">Seguros</h4>
-                    <ul className="space-y-3">
-                      <li className={`flex items-center ${plan.features.acidentes_pessoais ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Acidentes pessoais R$10 mil
-                      </li>
-                      <li className={`flex items-center ${plan.features.assistencia_funeral ? 'text-gray-700' : 'text-gray-400 line-through'}`}>
-                        <svg className="w-5 h-5 text-[#38B6FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Assistência funeral R$5 mil
-                      </li>
-                    </ul>
-                  </div>
-
-                  <button className="mt-8 w-full bg-[#38B6FF] text-white py-3 px-6 rounded-lg hover:bg-[#2b9fe6] transform hover:scale-105 transition-all duration-300">
-                    Contratar
-                  </button>
+                  ) : (
+                    <FaUsers className="w-8 h-8 text-[#38B6FF]" />
+                  )}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
+
+                <span className="px-4 py-1.5 bg-[#8566FB] text-white rounded-full text-sm mb-6">
+                  {plan.name}
+                </span>
+
+                <h3 className="text-2xl font-bold text-[#8566FB] mb-4 text-center leading-tight">
+                  {plan.description}
+                </h3>
+                
+                <p className="text-3xl font-bold text-gray-900 mb-8 text-center">
+                  R$ {plan.price.toFixed(2)}
+                  <span className="text-base font-normal text-gray-500 ml-1">/mês</span>
+                </p>
+
+                {/* Benefícios */}
+                <div className="w-full mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Assistências Saúde</h4>
+                  <ul className="space-y-4">
+                    {allFeatures.assistencias.map((feature, index) => {
+                      const isIncluded = hasFeature(getFeaturesList(plan.features).assistencias, feature);
+                      return (
+                        <li 
+                          key={index} 
+                          className={`flex items-start ${isIncluded ? 'text-gray-700' : 'text-gray-400 line-through'}`}
+                        >
+                          <FaCheck className={`w-5 h-5 mr-3 mt-0.5 flex-shrink-0 ${isIncluded ? 'text-[#38B6FF]' : 'text-gray-300'}`} />
+                          <span className="text-sm leading-relaxed">{feature}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                {/* Coberturas */}
+                <div className="w-full mb-4">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Coberturas</h4>
+                  <ul className="space-y-4">
+                    {allFeatures.coberturas.map((feature, index) => {
+                      const isIncluded = hasFeature(getFeaturesList(plan.features).assistencias, feature);
+                      return (
+                        <li 
+                          key={index} 
+                          className={`flex items-start ${isIncluded ? 'text-gray-700' : 'text-gray-400 line-through'}`}
+                        >
+                          <FaCheck className={`w-5 h-5 mr-3 mt-0.5 flex-shrink-0 ${isIncluded ? 'text-[#38B6FF]' : 'text-gray-300'}`} />
+                          <span className="text-sm leading-relaxed">{feature}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => console.log('Entre em contato conosco para contratar este plano!')}
+                className="w-full bg-[#38B6FF] text-white py-3.5 px-6 rounded-lg hover:bg-[#2b9fe6] transform hover:scale-105 transition-all duration-300 mt-6 font-medium"
+              >
+                Contratar
+              </button>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

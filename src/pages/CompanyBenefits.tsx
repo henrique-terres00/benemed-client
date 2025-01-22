@@ -117,17 +117,19 @@ const CompanyBenefits = () => {
                   />
                 </div>
                 <motion.div 
-                  className="mt-12"
+                  className="mt-8"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                  <Link
-                    to="/comprar"
-                    className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-[#38B6FF] hover:bg-[#2b9fe6] hover:scale-105 transform transition-all duration-300 shadow-lg"
-                  >
-                    Contrate agora!
-                  </Link>
+                  <div className="mt-8">
+                    <Link
+                      to="/planos-empresariais"
+                      className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
+                    >
+                      Comprar já
+                    </Link>
+                  </div>
                 </motion.div>
               </div>
             </motion.div>

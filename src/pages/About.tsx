@@ -79,7 +79,7 @@ const About = () => {
                   Observando a dificuldade de grande parte da população em acessar serviços de saúde de qualidade, um grupo de especialistas com vasta experiência nos setores de saúde, seguros e benefícios decidiu unir forças.
                 </p>
                 <p>
-                  BeneMed Saúde é uma forma inovadora de entregar acesso à saúde, englobando diversas assistências e benefícios, gerando conveniência e tranquilidade, através da parceria entre Educare e Verbin Seguros.
+                  BeneMed Saúde é uma forma inovadora de entregar acesso à saúde, englobando diversas assistências e benefícios.
                 </p>
               </div>
               <div className="mt-8 pt-8 border-t border-gray-200">

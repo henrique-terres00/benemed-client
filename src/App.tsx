@@ -11,6 +11,7 @@ import Purchase from './pages/Purchase';
 import Media from './pages/Media';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import BusinessPlans from './pages/BusinessPlans';
 import { PrivateRoute } from './components/PrivateRoute';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/planos-empresariais" element={<BusinessPlans />} />
         </Routes>
       </main>
       <Footer />
