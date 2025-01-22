@@ -4,7 +4,7 @@ import { FaCheck, FaUser, FaUsers } from 'react-icons/fa';
 
 interface PlanFeatures {
   assistencias: string[];
-  seguros: string[];
+  coberturas: string[];
 }
 
 interface PlanType {
@@ -30,11 +30,12 @@ export default function Purchase() {
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
-          'Descontos em medicamentos',
+          'Descontos em medicamentos'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     {
@@ -46,11 +47,12 @@ export default function Purchase() {
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
-          'Descontos em medicamentos',
+          'Descontos em medicamentos'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     // Planos Essencial
@@ -59,17 +61,18 @@ export default function Purchase() {
       name: 'Essencial Individual',
       description: 'Proteção completa para você',
       type: 'individual',
-      price: 79.90,
+      price: 69.90,
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
+          'Rede física',
+          'Assistência residencial'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     {
@@ -82,51 +85,54 @@ export default function Purchase() {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
+          'Rede física',
+          'Assistência residencial'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     // Planos Protege
     {
       id: '5',
       name: 'Protege Individual',
-      description: 'Proteção avançada para você',
+      description: 'Proteção ampliada para você',
       type: 'individual',
-      price: 99.90,
+      price: 89.90,
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
-          'Assistência Pet',
+          'Rede física',
+          'Assistência residencial',
+          'Assistência pet'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     {
       id: '6',
       name: 'Protege Familiar',
-      description: 'Proteção avançada para sua família',
+      description: 'Proteção ampliada para sua família',
       type: 'family',
-      price: 159.90,
+      price: 169.90,
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
-          'Assistência Pet',
+          'Rede física',
+          'Assistência residencial',
+          'Assistência pet'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     // Planos Premium
@@ -140,14 +146,15 @@ export default function Purchase() {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
-          'Assistência Pet',
-          'Check-up completo',
+          'Rede física',
+          'Assistência residencial',
+          'Assistência pet',
+          'Check-up completo'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     },
     {
@@ -155,19 +162,20 @@ export default function Purchase() {
       name: 'Premium Familiar',
       description: 'Proteção máxima para sua família',
       type: 'family',
-      price: 199.90,
+      price: 249.90,
       features: {
         assistencias: [
           'Orientação saúde + Telemedicina',
           'Descontos em medicamentos',
-          'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-          'Assistência Residencial',
-          'Assistência Pet',
-          'Check-up completo',
+          'Rede física',
+          'Assistência residencial',
+          'Assistência pet',
+          'Check-up completo'
+        ],
+        coberturas: [
           'Acidentes pessoais R$10 mil',
           'Assistência funeral R$5 mil'
-        ],
-        seguros: []
+        ]
       }
     }
   ];
@@ -175,7 +183,7 @@ export default function Purchase() {
   const getFeaturesList = (features: PlanFeatures) => {
     return {
       assistencias: features.assistencias,
-      seguros: features.seguros
+      coberturas: features.coberturas
     };
   };
 
@@ -183,9 +191,9 @@ export default function Purchase() {
     assistencias: [
       'Orientação saúde + Telemedicina',
       'Descontos em medicamentos',
-      'Desconto em Redes Médicas, odontológicas e Exames Laboratoriais e Imagem',
-      'Assistência Residencial',
-      'Assistência Pet',
+      'Rede física',
+      'Assistência residencial',
+      'Assistência pet',
       'Check-up completo'
     ],
     coberturas: [
@@ -295,7 +303,7 @@ export default function Purchase() {
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Coberturas</h4>
                   <ul className="space-y-4">
                     {allFeatures.coberturas.map((feature, index) => {
-                      const isIncluded = hasFeature(getFeaturesList(plan.features).assistencias, feature);
+                      const isIncluded = hasFeature(getFeaturesList(plan.features).coberturas, feature);
                       return (
                         <li 
                           key={index} 
